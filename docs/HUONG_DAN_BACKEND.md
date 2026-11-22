@@ -6,12 +6,12 @@
    - **Không bao giờ** đưa `service_role` key vào ứng dụng hay vào GitHub.
 
 ## 2. Tạo cơ sở dữ liệu
-1. Mở SQL Editor → dán toàn bộ nội dung `supabase/migrations/20261122000001_nep_nha_core.sql` → Run.
+1. Mở SQL Editor → lần lượt dán và Run từng file trong `supabase/migrations/` theo thứ tự tên (20261122… trước, 20261123… sau).
 2. Hoặc dùng Supabase CLI: `supabase link --project-ref <ref>` rồi `supabase db push`.
 3. Kiểm tra: Table Editor phải có các bảng `clans`, `clan_members`, `persons`, `parent_links`…, và mỗi bảng hiện “RLS enabled”.
 
 ## 3. Đăng nhập
-- Authentication → Providers: bật Email (và Phone nếu muốn đăng nhập bằng số điện thoại – cần nhà cung cấp SMS).
+- Authentication → Providers: bật Email. Khi thử nghiệm có thể tắt "Confirm email" để đăng ký xong vào được ngay; khi phát hành nên bật lại (và Phone nếu muốn đăng nhập bằng số điện thoại – cần nhà cung cấp SMS).
 - Authentication → Sessions: có thể thu hồi phiên đăng nhập của người dùng tại đây.
 
 ## 4. Gắn vào ứng dụng

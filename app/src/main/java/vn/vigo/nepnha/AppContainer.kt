@@ -2,6 +2,9 @@ package vn.vigo.nepnha
 
 import android.content.Context
 import vn.vigo.nepnha.data.db.AppDatabase
+import vn.vigo.nepnha.data.remote.ClanRepository
+import vn.vigo.nepnha.data.remote.SessionStore
+import vn.vigo.nepnha.data.remote.SupabaseClient
 import vn.vigo.nepnha.data.repo.EventRepository
 import vn.vigo.nepnha.data.repo.SettingsRepository
 import vn.vigo.nepnha.data.repo.TaskRepository
@@ -23,4 +26,10 @@ class AppContainer(context: Context) {
     /** Backend gia tộc chỉ khả dụng khi đã cấu hình Supabase lúc build. */
     val isBackendConfigured: Boolean
         get() = BuildConfig.SUPABASE_URL.startsWith("https://") && BuildConfig.SUPABASE_ANON_KEY.isNotBlank()
+
+    /** null khi bản build chưa cấu hình máy chủ. */
+    val supabase: SupabaseClient? by lazy {
+        if (isBackendConfigured) SupabaseClient(BuildConfig.SUPABASE_URL, BuildConfig.SUPABASE_ANON_KEY, SessionStore(app)) else null
+    }
+    val clans: ClanRepository? by lazy { supabase?.let { ClanRepository(it) } }
 }

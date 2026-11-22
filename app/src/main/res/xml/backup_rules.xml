@@ -2,5 +2,7 @@
 <full-backup-content>
     <include domain="database" path="." />
     <include domain="sharedpref" path="." />
+    <!-- Phiên đăng nhập được mã hóa bằng khóa riêng của máy: không sao lưu -->
+    <exclude domain="sharedpref" path="auth_session.xml" />
     <include domain="file" path="datastore/" />
 </full-backup-content>

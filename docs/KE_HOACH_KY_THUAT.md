@@ -77,8 +77,16 @@ supabase/      migrations SQL (bảng, RLS, RPC, audit, storage)
 - Ứng dụng phần Gia đình: Trang chủ, Lịch (ngày/tháng/năm, lọc), thêm/sửa/xóa sự kiện, nhắc nhiều mốc, việc gia đình + checklist + mẫu, thông báo nội bộ, cài đặt cỡ chữ, hướng dẫn HyperOS, thông báo thử.
 - Lược đồ Supabase đầy đủ với RLS, RPC, audit, storage.
 
+### Giai đoạn 2 (đã có trong mã, cần máy chủ thật để thử)
+- Đăng nhập / tạo tài khoản / quên mật khẩu bằng email (Supabase Auth), phiên lưu mã hóa bằng Android Keystore, tự làm mới phiên, đăng xuất thu hồi phiên.
+- Tạo gia tộc (người tạo thành Chủ gia tộc, cấp mã định danh), danh sách gia tộc của tôi kèm trạng thái chờ duyệt / cần bổ sung / bị từ chối / bị khóa.
+- Tham gia bằng mã mời: kiểm tra mã → xem tên gia tộc → chọn chi → khai họ tên, quan hệ, lời nhắn → chờ duyệt.
+- Quản lý: xét duyệt (chấp thuận / từ chối / yêu cầu bổ sung kèm ghi chú), khóa/mở khóa, đổi vai trò (chỉ gán vai thấp hơn mình), tạo mã mời có hạn/giới hạn lượt/theo chi (mã chỉ hiện một lần, chia sẻ qua Zalo…), thu hồi mã, tạo chi/nhánh dạng cây, lịch sử hoạt động có phân trang, rời gia tộc.
+- Client mạng tự viết trên HttpURLConnection (không thêm thư viện nặng); lỗi máy chủ được dịch sang tiếng Việt.
+- File SQL bổ sung: `supabase/migrations/20261123000001_phase2_rpc.sql` (phải chạy sau file đầu).
+
 ### Chưa hoàn thành (giai đoạn tiếp theo)
-- Ứng dụng chưa có đăng nhập, tạo/tham gia gia tộc, màn gia phả (cây/thế hệ/sơ đồ của tôi), chi nhánh, phân quyền trên giao diện.
+- Màn gia phả (cây/thế hệ/sơ đồ của tôi), nhập/sửa hồ sơ và quan hệ, vai vế trực tuyến.
 - Đồng bộ online/offline + giải quyết xung đột phía app (bảng `outbox` đã có, chưa có bộ đồng bộ).
 - FCM (cần file `google-services.json` của bạn), Realtime.
 - Sổ gia đình: hồ sơ người thân, ảnh, tài liệu, văn khấn, kiến thức phong tục.
@@ -87,8 +95,8 @@ supabase/      migrations SQL (bảng, RLS, RPC, audit, storage)
 
 ## 8. Lộ trình
 
-1. **Giai đoạn 1 (bản này)**: nền tảng, lịch âm, phần Gia đình, nhắc lịch, lược đồ máy chủ.
-2. **Giai đoạn 2**: đăng nhập Supabase, tạo/tham gia gia tộc, xét duyệt, danh sách thành viên, phân quyền.
+1. **Giai đoạn 1 (xong)**: nền tảng, lịch âm, phần Gia đình, nhắc lịch, lược đồ máy chủ.
+2. **Giai đoạn 2 (bản này)**: đăng nhập Supabase, tạo/tham gia gia tộc, xét duyệt, danh sách thành viên, phân quyền.
 3. **Giai đoạn 3**: gia phả (3 chế độ xem, phân trang cho hàng nghìn hồ sơ), chi nhánh, vai vế trực tuyến.
 4. **Giai đoạn 4**: đồng bộ offline-first + xung đột, Realtime, FCM, sự kiện/việc gia tộc.
 5. **Giai đoạn 5**: Sổ gia đình, sao lưu/khôi phục, xóa tài khoản, kiểm thử trên nhiều máy (Xiaomi HyperOS, Samsung, máy 2–3 GB RAM).

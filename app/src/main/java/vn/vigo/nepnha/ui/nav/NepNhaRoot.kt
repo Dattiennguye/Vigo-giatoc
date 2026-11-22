@@ -42,6 +42,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import vn.vigo.nepnha.AppContainer
 import vn.vigo.nepnha.ui.calendar.CalendarScreen
+import vn.vigo.nepnha.ui.clan.ClanCreateScreen
+import vn.vigo.nepnha.ui.clan.ClanDetailScreen
+import vn.vigo.nepnha.ui.clan.ClanJoinScreen
 import vn.vigo.nepnha.ui.clan.ClanScreen
 import vn.vigo.nepnha.ui.event.EventEditScreen
 import vn.vigo.nepnha.ui.home.HomeScreen
@@ -67,6 +70,11 @@ object Routes {
     const val SETTINGS = "settings"
     const val REMINDER_HEALTH = "reminder-health"
     const val ABOUT = "about"
+    const val CLAN_CREATE = "clan/create"
+    const val CLAN_JOIN = "clan/join"
+    const val CLAN_DETAIL = "clan/detail/{clanId}"
+
+    fun clanDetail(id: String) = "clan/detail/$id"
 
     fun eventEdit(id: String? = null, epochDay: Long? = null) =
         "event/edit?id=${id.orEmpty()}&date=${epochDay ?: -1L}"
@@ -180,7 +188,31 @@ fun NepNhaRoot(container: AppContainer, openTab: String?, onTabOpened: () -> Uni
                     onOpenEvent = { nav.navigate(Routes.eventEdit(it)) },
                 )
             }
-            composable(Routes.CLAN) { ClanScreen(container) }
+            composable(Routes.CLAN) {
+                ClanScreen(
+                    container = container,
+                    onCreate = { nav.navigate(Routes.CLAN_CREATE) },
+                    onJoin = { nav.navigate(Routes.CLAN_JOIN) },
+                    onOpenClan = { nav.navigate(Routes.clanDetail(it)) },
+                )
+            }
+            composable(Routes.CLAN_CREATE) {
+                container.clans?.let { repo ->
+                    ClanCreateScreen(repo, onBack = { nav.popBackStack() }, onCreated = { id ->
+                        nav.navigate(Routes.clanDetail(id)) { popUpTo(Routes.CLAN) }
+                    })
+                }
+            }
+            composable(Routes.CLAN_JOIN) {
+                container.clans?.let { repo -> ClanJoinScreen(repo, onBack = { nav.popBackStack() }) }
+            }
+            composable(
+                Routes.CLAN_DETAIL,
+                arguments = listOf(navArgument("clanId") { type = NavType.StringType }),
+            ) { entry ->
+                val id = entry.arguments?.getString("clanId").orEmpty()
+                container.clans?.let { repo -> ClanDetailScreen(repo, id, onBack = { nav.popBackStack() }) }
+            }
             composable(Routes.NOTIFICATIONS) {
                 NotificationsScreen(container, onOpenHealth = { nav.navigate(Routes.REMINDER_HEALTH) })
             }
