@@ -1,0 +1,61 @@
+name: Build NEP NHA APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cài JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cài Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+
+      - name: Kiểm thử lịch âm, vai vế và lịch nhắc
+        run: gradle :core:lunar:test :core:kinship:test :app:testDebugUnitTest --stacktrace
+
+      - name: Build APK release
+        env:
+          # Tùy chọn: khai báo trong Settings → Secrets của repo. Chỉ dùng anon key, KHÔNG dùng service-role key.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: gradle :app:assembleRelease --stacktrace
+
+      - name: Đổi tên APK
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/release/*.apk "dist/NepNha-$(date +%Y%m%d)-${GITHUB_SHA::7}.apk"
+          ls -la dist
+
+      - name: Tải lên APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NepNha-apk
+          path: dist/*.apk
+
+      - name: Tải lên báo cáo kiểm thử
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            core/*/build/reports/tests/
+            app/build/reports/tests/
+          if-no-files-found: ignore

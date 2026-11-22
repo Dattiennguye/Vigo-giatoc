@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nếp Nhà</string>
+    <string name="app_full_name">NẾP NHÀ – Lịch gia đình &amp; Gia tộc</string>
+    <string name="slogan">Gìn giữ ngày tháng – Kết nối các thế hệ</string>
+    <string name="channel_reminders">Nhắc ngày giỗ, sinh nhật, sự kiện</string>
+    <string name="channel_reminders_desc">Thông báo nhắc trước các ngày quan trọng của gia đình</string>
+    <string name="channel_general">Thông báo chung</string>
+</resources>
