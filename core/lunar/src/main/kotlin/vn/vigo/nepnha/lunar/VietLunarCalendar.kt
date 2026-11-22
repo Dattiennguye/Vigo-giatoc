@@ -159,6 +159,8 @@ object VietLunarCalendar {
         val k = int((dayNumber - 2415021.076998695) / 29.530588853)
         var monthStart = newMoonDay(k + 1, tz)
         if (monthStart > dayNumber) monthStart = newMoonDay(k, tz)
+        // Sóc rơi sát nửa đêm có thể làm k lệch một tháng (ví dụ 07/05/2054): lùi thêm một kỳ.
+        if (monthStart > dayNumber) monthStart = newMoonDay(k - 1, tz)
         var a11 = lunarMonth11(yy, tz)
         var b11 = a11
         var lunarYear: Int

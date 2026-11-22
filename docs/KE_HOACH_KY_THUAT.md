@@ -71,7 +71,7 @@ supabase/      migrations SQL (bảng, RLS, RPC, audit, storage)
 ## 7. Tình trạng (trung thực)
 
 ### Đã hoàn thành trong mã (có kiểm thử đơn vị, CI chạy tự động)
-- Lịch âm Việt Nam UTC+7: đổi âm↔dương, tháng nhuận, tháng thiếu/đủ, Can Chi, tiết khí, ngày lễ. Kiểm thử: 14 mốc đối chiếu thủ công + 2.486 đầu tháng âm 1900–2100 + đổi khứ hồi mọi ngày 1950–2060.
+- Lịch âm Việt Nam UTC+7: đổi âm↔dương, tháng nhuận, tháng thiếu/đủ, Can Chi, tiết khí, ngày lễ. Kiểm thử: 14 mốc đối chiếu thủ công + 2.486 đầu tháng âm 1900–2100 + đổi khứ hồi mọi ngày 1900–2100 (phát hiện và sửa một lỗi biên khi sóc rơi sát nửa đêm, ví dụ 07/05/2054).
 - Lặp sự kiện âm/dương/hằng tháng/mỗi N ngày, nhiều năm liên tục.
 - Bộ suy vai vế: ông bà nội/ngoại, cụ, cha mẹ (nuôi), anh chị em (cùng cha khác mẹ / cùng mẹ khác cha), cô dì chú bác cậu, anh chị em họ, con cháu chắt, vợ chồng, bố mẹ chồng/vợ, con dâu/rể, chị dâu/anh rể, thím/mợ, mẹ kế/bố dượng, thông gia; báo “cần xác nhận” khi thiếu dữ liệu; xưng hô tùy chỉnh.
 - Ứng dụng phần Gia đình: Trang chủ, Lịch (ngày/tháng/năm, lọc), thêm/sửa/xóa sự kiện, nhắc nhiều mốc, việc gia đình + checklist + mẫu, thông báo nội bộ, cài đặt cỡ chữ, hướng dẫn HyperOS, thông báo thử.

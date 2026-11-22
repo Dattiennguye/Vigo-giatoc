@@ -28,6 +28,8 @@ class VietLunarCalendarTest {
             // Năm lịch Việt khác lịch Trung Quốc
             d(1985, 1, 21) to LunarDate(1, 1, 1985),
             d(2007, 2, 17) to LunarDate(1, 1, 2007),
+            // Sóc sát nửa đêm: 08/05/2054 là mùng 1, ngày trước đó là 30 tháng trước
+            d(2054, 5, 7) to LunarDate(30, 3, 2054),
             // 1/9/1945 = 25/7 Ất Dậu
             d(1945, 9, 1) to LunarDate(25, 7, 1945),
         )
@@ -60,14 +62,14 @@ class VietLunarCalendarTest {
     }
 
     @Test
-    fun roundTripEveryDay1950to2060() {
-        var day = d(1950, 1, 1)
-        val end = d(2060, 12, 31)
+    fun roundTripEveryDay1900to2100() {
+        var day = d(1900, 3, 1)
+        val end = d(2100, 12, 31)
         val failures = ArrayList<String>()
         while (!day.isAfter(end)) {
             val lunar = VietLunarCalendar.solarToLunar(day)
             val back = VietLunarCalendar.lunarToSolar(lunar)
-            if (back != day) failures += "$day -> $lunar -> $back"
+            if (back != day || lunar.day !in 1..30) failures += "$day -> $lunar -> $back"
             day = day.plusDays(1)
         }
         assertTrue("${failures.size} ngày sai, ví dụ: ${failures.take(8)}", failures.isEmpty())
