@@ -63,11 +63,14 @@ class VietLunarCalendarTest {
     fun roundTripEveryDay1950to2060() {
         var day = d(1950, 1, 1)
         val end = d(2060, 12, 31)
+        val failures = ArrayList<String>()
         while (!day.isAfter(end)) {
             val lunar = VietLunarCalendar.solarToLunar(day)
-            assertEquals("$day", day, VietLunarCalendar.lunarToSolar(lunar))
+            val back = VietLunarCalendar.lunarToSolar(lunar)
+            if (back != day) failures += "$day -> $lunar -> $back"
             day = day.plusDays(1)
         }
+        assertTrue("${failures.size} ngày sai, ví dụ: ${failures.take(8)}", failures.isEmpty())
     }
 
     @Test
