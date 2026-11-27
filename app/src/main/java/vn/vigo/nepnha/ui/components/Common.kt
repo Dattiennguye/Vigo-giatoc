@@ -1,6 +1,8 @@
 package vn.vigo.nepnha.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +34,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -50,11 +54,14 @@ fun PrimaryButton(
     enabled: Boolean = true,
     icon: ImageVector? = null,
 ) {
+    val interaction = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.defaultMinSize(minHeight = 56.dp),
-        shape = RoundedCornerShape(12.dp),
+        interactionSource = interaction,
+        modifier = modifier.pressScale(interaction, enabled).defaultMinSize(minHeight = 56.dp),
+        shape = RoundedCornerShape(14.dp),
+        elevation = null,
         colors = ButtonDefaults.buttonColors(containerColor = NepColors.DeepRed, contentColor = NepColors.WarmWhite),
     ) {
         if (icon != null) {
@@ -73,11 +80,14 @@ fun SecondaryButton(
     enabled: Boolean = true,
     icon: ImageVector? = null,
 ) {
+    val interaction = remember { MutableInteractionSource() }
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.defaultMinSize(minHeight = 56.dp),
-        shape = RoundedCornerShape(12.dp),
+        interactionSource = interaction,
+        modifier = modifier.pressScale(interaction, enabled).defaultMinSize(minHeight = 56.dp),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, NepColors.Wood.copy(alpha = 0.35f)),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = NepColors.Wood),
     ) {
         if (icon != null) {
@@ -112,7 +122,7 @@ fun ScreenHeader(
                 Text(
                     title,
                     style = MaterialTheme.typography.headlineSmall,
-                    color = NepColors.DeepRed,
+                    color = NepColors.Ink,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.semantics { heading() },
@@ -123,8 +133,14 @@ fun ScreenHeader(
             }
             action?.invoke()
         }
-        KeyPatternBand(Modifier.padding(top = 8.dp), height = 10.dp)
+        HorizontalDivider(Modifier.padding(top = 10.dp), thickness = 1.dp, color = NepColors.Hairline)
     }
+}
+
+/** Nhãn nhỏ viết hoa đặt trên tiêu đề (ví dụ "HÔM NAY") – tạo thứ bậc mà không cần thêm màu. */
+@Composable
+fun Eyebrow(text: String, modifier: Modifier = Modifier, color: androidx.compose.ui.graphics.Color = NepColors.Bronze) {
+    Text(text.uppercase(), style = vn.vigo.nepnha.ui.theme.EyebrowStyle, color = color, modifier = modifier)
 }
 
 @Composable
@@ -235,8 +251,16 @@ fun <T> ChoiceChips(
                 onClick = { onToggle(o) },
                 label = { Text(label(o), style = MaterialTheme.typography.labelLarge) },
                 modifier = Modifier.defaultMinSize(minHeight = 48.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = sel,
+                    borderColor = NepColors.Wood.copy(alpha = 0.25f),
+                    selectedBorderColor = NepColors.Wood,
+                ),
                 colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = NepColors.DeepRed,
+                    containerColor = NepColors.WarmWhite,
+                    selectedContainerColor = NepColors.Wood,
                     selectedLabelColor = NepColors.WarmWhite,
                     labelColor = NepColors.Ink,
                 ),

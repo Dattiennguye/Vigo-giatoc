@@ -205,8 +205,8 @@ private fun MonthGrid(ui: CalendarUi, onSelect: (LocalDate) -> Unit) {
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp)
-            .background(NepColors.WarmWhite, RoundedCornerShape(10.dp))
-            .border(1.dp, NepColors.Bronze.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
+            .background(NepColors.WarmWhite, RoundedCornerShape(16.dp))
+            .border(1.dp, NepColors.Hairline, RoundedCornerShape(16.dp))
             .padding(vertical = 6.dp),
     ) {
         Row(Modifier.fillMaxWidth()) {
@@ -233,11 +233,7 @@ private fun MonthGrid(ui: CalendarUi, onSelect: (LocalDate) -> Unit) {
 @Composable
 private fun DayCellView(c: DayCell, selected: Boolean, isToday: Boolean, onSelect: (LocalDate) -> Unit, modifier: Modifier) {
     val lunarText = if (c.lunar.day == 1) "${c.lunar.day}/${c.lunar.month}" else "${c.lunar.day}"
-    val bg = when {
-        selected -> NepColors.DeepRed
-        isToday -> NepColors.RedLight
-        else -> Color.Transparent
-    }
+    val bg = if (selected) NepColors.DeepRed else Color.Transparent
     val main = when {
         selected -> NepColors.WarmWhite
         !c.inMonth -> NepColors.InkSoft.copy(alpha = 0.5f)
@@ -255,7 +251,8 @@ private fun DayCellView(c: DayCell, selected: Boolean, isToday: Boolean, onSelec
         modifier
             .heightIn(min = 58.dp)
             .padding(2.dp)
-            .background(bg, RoundedCornerShape(8.dp))
+            .background(bg, RoundedCornerShape(12.dp))
+            .border(if (isToday && !selected) 1.5.dp else 0.dp, if (isToday && !selected) NepColors.DeepRed else Color.Transparent, RoundedCornerShape(12.dp))
             .clickable(role = Role.Button) { onSelect(c.date) }
             .semantics(mergeDescendants = true) {
                 contentDescription = desc

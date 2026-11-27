@@ -1,5 +1,6 @@
 package vn.vigo.nepnha.ui.theme
 
+import vn.vigo.nepnha.R
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.lightColorScheme
@@ -10,6 +11,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Density
@@ -28,6 +30,8 @@ object NepColors {
     val RedLight = Color(0xFFF5E3E1)
     val Success = Color(0xFF2E6B3F)
     val Error = Color(0xFFA4262C)
+    val Hairline = Color(0x1F624735)    // viền mảnh: nâu gỗ 12%
+    val Shell = Color(0xFFF3EADC)       // lớp vỏ ngoài của thẻ nổi bật
 }
 
 private val colorScheme = lightColorScheme(
@@ -54,24 +58,34 @@ private val colorScheme = lightColorScheme(
     error = NepColors.Error,
 )
 
-// Tiêu đề dùng serif hệ thống (sang trọng, dễ đọc); nội dung dùng sans-serif. Không dùng font thư pháp.
-private val Serif = FontFamily.Serif
-private val Sans = FontFamily.SansSerif
+// Chữ: Spectral (serif, tiêu đề) + Be Vietnam Pro (nội dung) – cả hai vẽ dấu tiếng Việt chuẩn.
+// Đã cắt bớt chỉ còn ký tự Latin + tiếng Việt để APK nhẹ. Không dùng font thư pháp cho nội dung.
+val Serif = FontFamily(Font(R.font.spectral_semibold, FontWeight.SemiBold))
+val Sans = FontFamily(
+    Font(R.font.be_vietnam_pro_regular, FontWeight.Normal),
+    Font(R.font.be_vietnam_pro_medium, FontWeight.Medium),
+    Font(R.font.be_vietnam_pro_semibold, FontWeight.SemiBold),
+    Font(R.font.be_vietnam_pro_semibold, FontWeight.Bold),
+)
 
+// Tiêu đề: khoảng cách chữ hơi khít, dòng 1.2; nội dung: dòng 1.5 để người lớn tuổi đọc thoải mái.
 private val typography = Typography(
-    displaySmall = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 34.sp, lineHeight = 42.sp),
-    headlineMedium = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 30.sp, lineHeight = 38.sp),
-    headlineSmall = TextStyle(fontFamily = Serif, fontWeight = FontWeight.Bold, fontSize = 26.sp, lineHeight = 34.sp),
-    titleLarge = TextStyle(fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 24.sp, lineHeight = 32.sp),
+    displaySmall = TextStyle(fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 34.sp, lineHeight = 40.sp, letterSpacing = (-0.3).sp),
+    headlineMedium = TextStyle(fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 30.sp, lineHeight = 36.sp, letterSpacing = (-0.3).sp),
+    headlineSmall = TextStyle(fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 26.sp, lineHeight = 32.sp, letterSpacing = (-0.2).sp),
+    titleLarge = TextStyle(fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 23.sp, lineHeight = 29.sp, letterSpacing = (-0.1).sp),
     titleMedium = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 20.sp, lineHeight = 28.sp),
     titleSmall = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 26.sp),
-    bodyLarge = TextStyle(fontFamily = Sans, fontSize = 20.sp, lineHeight = 30.sp),
+    bodyLarge = TextStyle(fontFamily = Sans, fontSize = 19.sp, lineHeight = 29.sp),
     bodyMedium = TextStyle(fontFamily = Sans, fontSize = 18.sp, lineHeight = 27.sp),
     bodySmall = TextStyle(fontFamily = Sans, fontSize = 16.sp, lineHeight = 24.sp),
     labelLarge = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 24.sp),
     labelMedium = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 22.sp),
     labelSmall = TextStyle(fontFamily = Sans, fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp),
 )
+
+/** Nhãn nhỏ viết hoa, giãn chữ – đặt trên tiêu đề để tạo thứ bậc (vẫn ≥ 14sp cho người lớn tuổi). */
+val EyebrowStyle = TextStyle(fontFamily = Sans, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 1.4.sp)
 
 /** Cấu hình hiệu năng: trên máy yếu tắt hiệu ứng chuyển cảnh và họa tiết phụ. */
 @Immutable

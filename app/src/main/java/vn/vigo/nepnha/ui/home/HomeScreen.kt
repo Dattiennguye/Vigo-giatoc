@@ -1,5 +1,11 @@
 package vn.vigo.nepnha.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
@@ -31,6 +38,7 @@ import vn.vigo.nepnha.AppContainer
 import vn.vigo.nepnha.domain.Occurrence
 import vn.vigo.nepnha.lunar.Holiday
 import vn.vigo.nepnha.ui.components.EmptyState
+import vn.vigo.nepnha.ui.components.Eyebrow
 import vn.vigo.nepnha.ui.components.ErrorState
 import vn.vigo.nepnha.ui.components.KeyPatternBand
 import vn.vigo.nepnha.ui.components.LinkButton
@@ -43,6 +51,7 @@ import vn.vigo.nepnha.ui.components.SecondaryButton
 import vn.vigo.nepnha.ui.components.SectionTitle
 import vn.vigo.nepnha.ui.components.VnFormat
 import vn.vigo.nepnha.ui.components.nepViewModel
+import vn.vigo.nepnha.ui.theme.LocalPerformance
 import vn.vigo.nepnha.ui.theme.NepColors
 import java.time.LocalDate
 
@@ -133,7 +142,7 @@ private fun Brand() {
     ) {
         Text(
             "NẾP NHÀ",
-            style = MaterialTheme.typography.headlineMedium.copy(letterSpacing = 4.sp),
+            style = MaterialTheme.typography.headlineMedium.copy(letterSpacing = 6.sp),
             color = NepColors.DeepRed,
             modifier = Modifier.semantics { heading() },
         )
@@ -151,8 +160,15 @@ private fun Brand() {
 @Composable
 private fun TodayCard(s: HomeState.Ready, onOpenCalendar: () -> Unit, modifier: Modifier) {
     val t = s.today
-    NepCard(modifier, onClick = onOpenCalendar, onClickLabel = "Mở lịch") {
-        Text(VnFormat.weekday(t.date.dayOfWeek), style = MaterialTheme.typography.titleMedium, color = NepColors.Wood)
+    // Lối vào một lần khi mở ứng dụng (nhẹ nhàng, chỉ transform/opacity); tắt trên máy yếu hoặc khi giảm hiệu ứng.
+    val reduce = LocalPerformance.current.reduceMotion
+    val shown = remember { MutableTransitionState(reduce) }.apply { targetState = true }
+    AnimatedVisibility(
+        visibleState = shown,
+        enter = fadeIn(tween(420)) + slideInVertically(tween(420, easing = FastOutSlowInEasing)) { it / 12 },
+    ) {
+    NepCard(modifier, onClick = onOpenCalendar, onClickLabel = "Mở lịch", framed = true) {
+        Eyebrow("Hôm nay · ${VnFormat.weekday(t.date.dayOfWeek)}")
         Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(
                 "${t.date.dayOfMonth}",
@@ -167,11 +183,12 @@ private fun TodayCard(s: HomeState.Ready, onOpenCalendar: () -> Unit, modifier: 
                 Text("Dương lịch", style = MaterialTheme.typography.bodySmall, color = NepColors.InkSoft)
             }
         }
-        OrnamentDivider(Modifier.padding(vertical = 6.dp))
+        OrnamentDivider(Modifier.padding(vertical = 8.dp))
+        Eyebrow("Âm lịch")
         Text(
-            "Âm lịch: ngày ${t.lunar.day} tháng ${VnFormat.lunarMonthName(t.lunar.month)}" +
+            "Ngày ${t.lunar.day} tháng ${VnFormat.lunarMonthName(t.lunar.month)}" +
                 (if (t.lunar.isLeapMonth) " (nhuận)" else ""),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             color = NepColors.Ink,
         )
         Text(
@@ -180,6 +197,7 @@ private fun TodayCard(s: HomeState.Ready, onOpenCalendar: () -> Unit, modifier: 
             color = NepColors.InkSoft,
         )
         Text("Tiết ${t.solarTerm}", style = MaterialTheme.typography.bodySmall, color = NepColors.InkSoft)
+    }
     }
 }
 

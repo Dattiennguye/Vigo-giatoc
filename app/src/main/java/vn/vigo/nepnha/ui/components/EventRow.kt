@@ -33,13 +33,13 @@ fun EventTypeBadge(type: EventType, modifier: Modifier = Modifier) {
     Box(
         modifier
             .widthIn(min = 52.dp)
-            .background(Color(type.colorHex), RoundedCornerShape(8.dp))
-            .padding(horizontal = 8.dp, vertical = 6.dp),
+            .background(Color(type.colorHex).copy(alpha = 0.12f), RoundedCornerShape(10.dp))
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             type.symbol,
-            color = NepColors.WarmWhite,
+            color = Color(type.colorHex),
             style = MaterialTheme.typography.labelMedium,
             maxLines = 1,
             textAlign = TextAlign.Center,

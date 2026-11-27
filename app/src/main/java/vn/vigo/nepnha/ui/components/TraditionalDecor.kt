@@ -2,7 +2,12 @@ package vn.vigo.nepnha.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -12,6 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -87,18 +96,44 @@ fun NepCard(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onClickLabel: String? = null,
-    framed: Boolean = true,
+    framed: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val light = LocalPerformance.current.lightDecor
-    val shape = RoundedCornerShape(10.dp)
-    var m = modifier
-        .fillMaxWidth()
-        .background(NepColors.WarmWhite, shape)
-        .border(1.dp, NepColors.Bronze.copy(alpha = 0.55f), shape)
-    if (framed && !light) m = m.cornerFrame()
-    if (onClick != null) m = m.clickable(onClickLabel = onClickLabel, role = Role.Button, onClick = onClick)
-    Column(m.padding(horizontal = 18.dp, vertical = 16.dp), content = content)
+    val inner = RoundedCornerShape(14.dp)
+    val interaction = remember { MutableInteractionSource() }
+    var m = modifier.fillMaxWidth()
+    if (framed) {
+        // Thẻ nổi bật: lớp vỏ màu kem đậm + lõi trắng ấm, bo góc đồng tâm (vỏ 20dp = lõi 14dp + khe 6dp)
+        m = m.background(NepColors.Shell, RoundedCornerShape(20.dp))
+            .border(1.dp, NepColors.Hairline, RoundedCornerShape(20.dp))
+            .padding(6.dp)
+    }
+    m = m.pressScale(interaction, enabled = onClick != null)
+        .background(NepColors.WarmWhite, inner)
+        .border(1.dp, NepColors.Hairline, inner)
+    if (framed && !light) m = m.cornerFrame(NepColors.Bronze.copy(alpha = 0.7f))
+    if (onClick != null) {
+        m = m.clickable(
+            interactionSource = interaction,
+            indication = LocalIndication.current,
+            onClickLabel = onClickLabel,
+            role = Role.Button,
+            onClick = onClick,
+        )
+    }
+    Column(m.padding(horizontal = 20.dp, vertical = 18.dp), content = content)
+}
+
+/** Phản hồi chạm: thu nhỏ rất nhẹ (0.98) khi nhấn, như ấn vào vật thật. Chỉ dùng transform nên không tốn bố cục. */
+fun Modifier.pressScale(interaction: MutableInteractionSource, enabled: Boolean = true): Modifier = composed {
+    if (!enabled) return@composed this
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (pressed) 0.98f else 1f, animationSpec = tween(110), label = "press")
+    this.graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+    }
 }
 
 /** Dấu chấm hoa văn nhỏ dưới tiêu đề (như họa tiết hoa mai cách điệu). */

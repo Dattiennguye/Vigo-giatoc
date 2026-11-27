@@ -122,7 +122,8 @@ fun NepNhaRoot(container: AppContainer, openTab: String?, onTabOpened: () -> Uni
         // Mỗi màn hình tự xử lý thanh trạng thái (ScreenHeader) để không bị đệm hai lần.
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (TABS.any { it.route == current }) {
+            if (TABS.any { it.route == current }) androidx.compose.foundation.layout.Column {
+                androidx.compose.material3.HorizontalDivider(thickness = 1.dp, color = NepColors.Hairline)
                 NavigationBar(containerColor = NepColors.WarmWhite, tonalElevation = 0.dp) {
                     TABS.forEach { tab ->
                         val selected = current == tab.route
@@ -150,7 +151,7 @@ fun NepNhaRoot(container: AppContainer, openTab: String?, onTabOpened: () -> Uni
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = NepColors.DeepRed,
                                 selectedTextColor = NepColors.DeepRed,
-                                indicatorColor = NepColors.RedLight,
+                                indicatorColor = NepColors.Shell,
                                 unselectedIconColor = NepColors.Wood,
                                 unselectedTextColor = NepColors.InkSoft,
                             ),
